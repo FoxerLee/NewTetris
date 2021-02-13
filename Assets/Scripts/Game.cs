@@ -32,6 +32,11 @@ public class Game : MonoBehaviour
             return;
         }
 
+        if(score == -1)
+        {
+            OnGameLose();
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
             var mousePos = Input.mousePosition;
@@ -80,13 +85,13 @@ public class Game : MonoBehaviour
             }
         };
 
-        f.OnGameOver = () =>
+        f.OnGameWin = () =>
         {
             if (isGameOver == true)
             {
                 return;
             }
-            OnGameOver();
+            OnGameWin();
         };
         objs.Add(f);
 
@@ -97,19 +102,6 @@ public class Game : MonoBehaviour
 
     public void Restart()
     {
-        playButton.gameObject.SetActive(false);
-        obj = SpawnNextObj();
-        Debug.Log("Restart");
-        score = 50;
-        scoreLabel.text = "50";
-
-        isGameOver = false;
-    }
-
-    private void OnGameOver()
-    {
-        isGameOver = true;
-        playButton.gameObject.SetActive(true);
 
         for (int i = 0; i < objs.Count; i++)
         {
@@ -119,6 +111,44 @@ public class Game : MonoBehaviour
         }
 
         objs.Clear();
+
+        playButton.gameObject.SetActive(false);
+        obj = SpawnNextObj();
+        Debug.Log("Restart");
+        score = 50;
+        scoreLabel.text = "50";
+
+        isGameOver = false;
+    }
+
+    private void OnGameWin()
+    {
+        isGameOver = true;
+        playButton.gameObject.SetActive(true);
+
+        // for (int i = 0; i < objs.Count; i++)
+        // {
+        //     objs[i].SetSimulated(false);
+        //     // AddScore(objs[i].score);
+        //     Destroy(objs[i].gameObject);
+        // }
+
+        // objs.Clear();
+    }
+
+    private void OnGameLose()
+    {
+        isGameOver = true;
+        playButton.gameObject.SetActive(true);
+
+        // for (int i = 0; i < objs.Count; i++)
+        // {
+        //     objs[i].SetSimulated(false);
+        //     // AddScore(objs[i].score);
+        //     Destroy(objs[i].gameObject);
+        // }
+
+        // objs.Clear();
     }
 
     private void RemoveObj(Obj f)
@@ -146,11 +176,11 @@ public class Game : MonoBehaviour
         return false;
     }
 
-    private void AddScore(int score)
-    {
-        this.score += score;
-        scoreLabel.text = $"{this.score}";
-    }
+    // private void AddScore(int score)
+    // {
+    //     this.score += score;
+    //     scoreLabel.text = $"{this.score}";
+    // }
 
     private void ChangeScore()
     {

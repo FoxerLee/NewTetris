@@ -7,7 +7,7 @@ public class Obj : MonoBehaviour
     public int score;
     public GameObject nextLevelPrefab;
     public Action<Obj, Obj> OnLevelUp;
-    public Action OnGameOver;
+    public Action OnGameWin;
 
     private Rigidbody2D rigid;
     private bool isTouchRedline;
@@ -28,8 +28,8 @@ public class Obj : MonoBehaviour
         timer += Time.deltaTime;
         if (timer > 5)
         {
-            Debug.Log("Game Over!");
-            OnGameOver?.Invoke();
+            Debug.Log("Win!");
+            OnGameWin?.Invoke();
         }
     }
 
