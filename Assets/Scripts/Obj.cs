@@ -40,23 +40,24 @@ public class Obj : MonoBehaviour
             rigid = GetComponent<Rigidbody2D>();
         }
         rigid.simulated = b;
+        rigid.velocity = new Vector3(0, -4, 0);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        var obj = collision.gameObject;
-        var obj_old = obj.GetComponent<Obj>();
-        if (obj.CompareTag("Obj"))
-        {   
-            if (obj.name == gameObject.name)
-            {
-                if (nextLevelPrefab != null)
-                {
-                    OnLevelUp?.Invoke(this, obj_old);
-                }
-            }
-        }
-    }
+    // private void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     var obj = collision.gameObject;
+    //     var obj_old = obj.GetComponent<Obj>();
+    //     if (obj.CompareTag("Obj"))
+    //     {   
+    //         if (obj.name == gameObject.name)
+    //         {
+    //             if (nextLevelPrefab != null)
+    //             {
+    //                 OnLevelUp?.Invoke(this, obj_old);
+    //             }
+    //         }
+    //     }
+    // }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

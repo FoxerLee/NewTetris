@@ -46,7 +46,7 @@ public class Game : MonoBehaviour
             obj.gameObject.transform.position = objPos;
 
             obj.SetSimulated(true);
-
+            // obj.rigid.velocity = new Vector3(0, -5, 0);
             obj = SpawnNextObj();
         }
     }
@@ -68,22 +68,22 @@ public class Game : MonoBehaviour
         var f = obj.GetComponent<Obj>();
         f.SetSimulated(false);
         f.id = objId++;
-        f.OnLevelUp = (a, b) =>
-        {
-            if (isObjExist(a) && isObjExist(b))
-            {
-                var pos1 = a.gameObject.transform.position;
-                var pos2 = b.gameObject.transform.position;
-                var pos_new = (pos1 + pos2) * 0.5f;
-                RemoveObj(a);
-                RemoveObj(b);
-                // AddScore(a.score);
-                // Instantiate(a.nextLevelPrefab, pos_new, Quaternion.identity);
-                collideAudio.Play();
-                var fr = SpawnObj(a.nextLevelPrefab, pos_new);
-                fr.SetSimulated(true);
-            }
-        };
+        // f.OnLevelUp = (a, b) =>
+        // {
+        //     if (isObjExist(a) && isObjExist(b))
+        //     {
+        //         var pos1 = a.gameObject.transform.position;
+        //         var pos2 = b.gameObject.transform.position;
+        //         var pos_new = (pos1 + pos2) * 0.5f;
+        //         RemoveObj(a);
+        //         RemoveObj(b);
+        //         // AddScore(a.score);
+        //         // Instantiate(a.nextLevelPrefab, pos_new, Quaternion.identity);
+        //         collideAudio.Play();
+        //         var fr = SpawnObj(a.nextLevelPrefab, pos_new);
+        //         fr.SetSimulated(true);
+        //     }
+        // };
 
         f.OnGameWin = () =>
         {
