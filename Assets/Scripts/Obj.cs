@@ -40,7 +40,7 @@ public class Obj : MonoBehaviour
             rigid = GetComponent<Rigidbody2D>();
         }
         rigid.simulated = b;
-        rigid.velocity = new Vector3(0, -4, 0);
+        rigid.velocity = new Vector3(0, -3, 0);
     }
 
     // private void OnCollisionEnter2D(Collision2D collision)

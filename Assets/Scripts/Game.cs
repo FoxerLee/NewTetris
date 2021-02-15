@@ -53,7 +53,18 @@ public class Game : MonoBehaviour
 
     private Obj SpawnNextObj()
     {
-        var rand = Random.Range(0, objPrefabList.Count-1);
+        var prob = Random.Range(0f, 1f);
+        var rand = 0;
+        if (prob > 0.9)
+        {
+            rand = Random.Range(objPrefabList.Count-2, objPrefabList.Count);
+        }
+        else
+        {
+            rand = Random.Range(0, objPrefabList.Count-2);
+        }
+        Debug.Log(rand);
+        // var rand = Random.Range(0, objPrefabList.Count-2);
         var prefab = objPrefabList[rand].gameObject;
         var pos = spawnPoint.position;
         ChangeScore();
