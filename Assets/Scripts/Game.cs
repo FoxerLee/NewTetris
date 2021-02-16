@@ -13,7 +13,16 @@ public class Game : MonoBehaviour
     public AudioSource winAudio;
     public AudioSource loseAudio;
     public int score;
+    public Transform camTransform;
+    // private CameraShake mainCamera;
     // public int cubeLeft;
+
+    // How long the object should shake for.
+	public float shakeDuration = 0f;
+	
+	// Amplitude of the shake. A larger value shakes the camera harder.
+	public float shakeAmount = 0f;
+	public float decreaseFactor = 1.0f;
 
     private Obj obj;
     private int objId;
@@ -21,6 +30,16 @@ public class Game : MonoBehaviour
     // private float highestY;
 
     private List<Obj> objs = new List<Obj>();
+    Vector3 originalPos;
+	
+	void Awake()
+	{
+		if (camTransform == null)
+		{
+			camTransform = GetComponent(typeof(Transform)) as Transform;
+		}
+	}
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +47,12 @@ public class Game : MonoBehaviour
         // highestY = -10f;
 
     }
+
+    void OnEnable()
+	{
+		originalPos = camTransform.localPosition;
+	}
+
 
     // Update is called once per frame
     void Update()
@@ -51,9 +76,15 @@ public class Game : MonoBehaviour
             if (objPosY < -6.5f) 
             {
                 collideAudio.Play();
-                
+                // objs[i].Shake();
+                shakeDuration = 0.15f;
                 Destroy(objs[i].gameObject);
                 objs.RemoveAt(i);
+                if (shakeAmount < 3.0f)
+                {
+                    shakeAmount += 0.5f;
+                }
+                
             }
             // tempY = Mathf.Max(tempY, objPosY);
             // Debug.Log(objPosY);
@@ -62,6 +93,17 @@ public class Game : MonoBehaviour
         // {
         //     Debug.Log("collapse");
         // }
+        if (shakeDuration > 0)
+		{
+			camTransform.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
+			shakeDuration -= Time.deltaTime * decreaseFactor;
+		}
+		else
+		{
+			shakeDuration = 0f;
+			camTransform.localPosition = originalPos;
+            
+		}
 
         if (Input.GetMouseButtonUp(0))
         {
