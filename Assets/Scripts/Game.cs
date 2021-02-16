@@ -21,8 +21,11 @@ public class Game : MonoBehaviour
 	public float shakeDuration = 0f;
 	
 	// Amplitude of the shake. A larger value shakes the camera harder.
-	public float shakeAmount = 0f;
-	public float decreaseFactor = 1.0f;
+	public float shakeAmount = 0.1f;
+	public float decreaseFactor = 0.5f;
+
+    // control shake or not
+    private bool isShakeEnabled = true;
 
     private Obj obj;
     private int objId;
@@ -77,22 +80,24 @@ public class Game : MonoBehaviour
             {
                 collideAudio.Play();
                 // objs[i].Shake();
-                shakeDuration = 0.15f;
+                if (isShakeEnabled)
+                {
+                    shakeDuration = 0.2f;
+                }
+                
                 Destroy(objs[i].gameObject);
                 objs.RemoveAt(i);
+
                 if (shakeAmount < 3.0f)
                 {
-                    shakeAmount += 0.5f;
+                    shakeAmount += 0.2f;
                 }
                 
             }
             // tempY = Mathf.Max(tempY, objPosY);
             // Debug.Log(objPosY);
         }
-        // if (tempY < highestY)
-        // {
-        //     Debug.Log("collapse");
-        // }
+       
         if (shakeDuration > 0)
 		{
 			camTransform.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
@@ -114,13 +119,13 @@ public class Game : MonoBehaviour
             obj.gameObject.transform.position = objPos;
 
             obj.SetSimulated(true);
-            // obj.rigid.velocity = new Vector3(0, -5, 0);
-            // for (int i = 0; i < objs.Count-2; i++)
-            // {
-            //     var objPosY = objs[i].rigid.position.y;
-            //     highestY = Mathf.Max(highestY, objPosY);
-            // }
+
             obj = SpawnNextObj();
+        }
+
+        if (Input.GetKeyDown (KeyCode.Q))
+        {
+            IsShake();
         }
     }
 
@@ -202,6 +207,22 @@ public class Game : MonoBehaviour
         scoreLabel.text = "50";
 
         isGameOver = false;
+    }
+
+    public void IsShake()
+    {
+        if (isShakeEnabled)
+        {
+            isShakeEnabled = false;
+            var shakeLabel = GameObject.Find("Shake").GetComponent<Text>();
+            shakeLabel.color = Color.gray;
+        }
+        else
+        {
+            isShakeEnabled = true;
+            var shakeLabel = GameObject.Find("Shake").GetComponent<Text>();
+            shakeLabel.color = Color.white;
+        }
     }
 
     private void OnGameWin()
