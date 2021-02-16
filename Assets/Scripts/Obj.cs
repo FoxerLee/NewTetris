@@ -9,7 +9,7 @@ public class Obj : MonoBehaviour
     public Action<Obj, Obj> OnLevelUp;
     public Action OnGameWin;
 
-    private Rigidbody2D rigid;
+    public Rigidbody2D rigid;
     private bool isTouchRedline;
     private float timer;
     // Start is called before the first frame update
@@ -40,7 +40,7 @@ public class Obj : MonoBehaviour
             rigid = GetComponent<Rigidbody2D>();
         }
         rigid.simulated = b;
-        rigid.velocity = new Vector3(0, -3, 0);
+        rigid.velocity = new Vector3(0, -4, 0);
     }
 
     // private void OnCollisionEnter2D(Collision2D collision)

@@ -10,18 +10,23 @@ public class Game : MonoBehaviour
     public Button playButton;
     public Text scoreLabel;
     public AudioSource collideAudio;
+    public AudioSource winAudio;
+    public AudioSource loseAudio;
     public int score;
     // public int cubeLeft;
 
     private Obj obj;
     private int objId;
     private bool isGameOver;
+    // private float highestY;
 
     private List<Obj> objs = new List<Obj>();
     // Start is called before the first frame update
     void Start()
     {
         // obj = SpawnNextObj();
+        // highestY = -10f;
+
     }
 
     // Update is called once per frame
@@ -37,6 +42,27 @@ public class Game : MonoBehaviour
             OnGameLose();
         }
 
+        // check whether collapse
+        // var tempY = -10f;
+        for (int i = 0; i < objs.Count; i++)
+        {
+            var objPosY = objs[i].rigid.position.y;
+            
+            if (objPosY < -6.5f) 
+            {
+                collideAudio.Play();
+                
+                Destroy(objs[i].gameObject);
+                objs.RemoveAt(i);
+            }
+            // tempY = Mathf.Max(tempY, objPosY);
+            // Debug.Log(objPosY);
+        }
+        // if (tempY < highestY)
+        // {
+        //     Debug.Log("collapse");
+        // }
+
         if (Input.GetMouseButtonUp(0))
         {
             var mousePos = Input.mousePosition;
@@ -47,6 +73,11 @@ public class Game : MonoBehaviour
 
             obj.SetSimulated(true);
             // obj.rigid.velocity = new Vector3(0, -5, 0);
+            // for (int i = 0; i < objs.Count-2; i++)
+            // {
+            //     var objPosY = objs[i].rigid.position.y;
+            //     highestY = Mathf.Max(highestY, objPosY);
+            // }
             obj = SpawnNextObj();
         }
     }
@@ -117,7 +148,6 @@ public class Game : MonoBehaviour
         for (int i = 0; i < objs.Count; i++)
         {
             objs[i].SetSimulated(false);
-            // AddScore(objs[i].score);
             Destroy(objs[i].gameObject);
         }
 
@@ -136,26 +166,17 @@ public class Game : MonoBehaviour
     {
         isGameOver = true;
         playButton.gameObject.SetActive(true);
-
-        // for (int i = 0; i < objs.Count; i++)
-        // {
-        //     objs[i].SetSimulated(false);
-        //     // AddScore(objs[i].score);
-        //     Destroy(objs[i].gameObject);
-        // }
-
-        // objs.Clear();
+        winAudio.Play();
     }
 
     private void OnGameLose()
     {
         isGameOver = true;
         playButton.gameObject.SetActive(true);
-
+        loseAudio.Play();
         // for (int i = 0; i < objs.Count; i++)
         // {
         //     objs[i].SetSimulated(false);
-        //     // AddScore(objs[i].score);
         //     Destroy(objs[i].gameObject);
         // }
 

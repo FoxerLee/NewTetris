@@ -100,6 +100,7 @@ MonoBehaviour:
   score: 1
   nextLevelPrefab: {fileID: 2798860366858006247, guid: eb4b918fcd1324b519ea4761524665f7,
     type: 3}
+  rigid: {fileID: 0}
 --- !u!50 &5906739061469957336
 Rigidbody2D:
   serializedVersion: 4
@@ -113,7 +114,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0.5
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0.2
   m_Material: {fileID: 0}
