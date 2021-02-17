@@ -8,7 +8,8 @@ public class Game : MonoBehaviour
     public List<Obj> objPrefabList;
     public Transform spawnPoint;
     public Button playButton;
-    public Text scoreLabel;
+    public Text digitsLabel;
+    public Text tensLabel;
     public AudioSource collideAudio;
     public AudioSource winAudio;
     public AudioSource loseAudio;
@@ -24,12 +25,17 @@ public class Game : MonoBehaviour
 	public float shakeAmount = 0.1f;
 	public float decreaseFactor = 0.5f;
 
-    // control shake or not
+    // control
     private bool isShakeEnabled = true;
+    private bool isMusicEnabled = true;
+    private bool isRotation = true;
+    private bool isExplosion = true;
 
     private Obj obj;
     private int objId;
     private bool isGameOver;
+
+    // private float originY;
     // private float highestY;
 
     private List<Obj> objs = new List<Obj>();
@@ -46,8 +52,6 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // obj = SpawnNextObj();
-        // highestY = -10f;
 
     }
 
@@ -75,27 +79,53 @@ public class Game : MonoBehaviour
         for (int i = 0; i < objs.Count; i++)
         {
             var objPosY = objs[i].rigid.position.y;
-            
-            if (objPosY < -6.5f) 
+            var objPosX = objs[i].rigid.position.x;
+            if (objPosY < -6f || objPosX < -3.4f || objPosX > 3.4f) 
             {
-                collideAudio.Play();
+                
                 // objs[i].Shake();
-                if (isShakeEnabled)
+                
+
+                objs[i].durationTime += Time.deltaTime;
+                objs[i].totalTime += Time.deltaTime;
+                // Debug.Log(objs[i].durationTime);
+                if (isExplosion)
                 {
-                    shakeDuration = 0.2f;
+                    if (objs[i].durationTime > objs[i].gapTime)
+                    {
+                        objs[i].gameObject.SetActive(false);
+                        objs[i].durationTime = 0f;
+                        // Debug.Log("1");
+                    }
+                    else
+                    {
+                        // Debug.Log("2");
+                        objs[i].gameObject.SetActive(true);
+                        // objs[i].durationTime = 0f;
+                    }
                 }
                 
-                Destroy(objs[i].gameObject);
-                objs.RemoveAt(i);
-
-                if (shakeAmount < 3.0f)
+                
+                if (objs[i].totalTime > 1f)
                 {
-                    shakeAmount += 0.2f;
+
+                    if (isShakeEnabled)
+                    {
+                        shakeDuration = 0.2f;
+                    }
+
+                    collideAudio.Play();
+                    Destroy(objs[i].gameObject);
+                    objs.RemoveAt(i);
+                }
+
+                if (shakeAmount < 0.5f)
+                {
+                    shakeAmount += 0.1f;
                 }
                 
             }
-            // tempY = Mathf.Max(tempY, objPosY);
-            // Debug.Log(objPosY);
+
         }
        
         if (shakeDuration > 0)
@@ -127,6 +157,21 @@ public class Game : MonoBehaviour
         {
             IsShake();
         }
+
+        if (Input.GetKeyDown (KeyCode.W))
+        {
+            PlayMusic();
+        }
+
+        if (Input.GetKeyDown (KeyCode.E))
+        {
+            TextRotate();
+        }
+
+        if (Input.GetKeyDown (KeyCode.R))
+        {
+            CubeExplosion();
+        }
     }
 
     private Obj SpawnNextObj()
@@ -157,22 +202,6 @@ public class Game : MonoBehaviour
         var f = obj.GetComponent<Obj>();
         f.SetSimulated(false);
         f.id = objId++;
-        // f.OnLevelUp = (a, b) =>
-        // {
-        //     if (isObjExist(a) && isObjExist(b))
-        //     {
-        //         var pos1 = a.gameObject.transform.position;
-        //         var pos2 = b.gameObject.transform.position;
-        //         var pos_new = (pos1 + pos2) * 0.5f;
-        //         RemoveObj(a);
-        //         RemoveObj(b);
-        //         // AddScore(a.score);
-        //         // Instantiate(a.nextLevelPrefab, pos_new, Quaternion.identity);
-        //         collideAudio.Play();
-        //         var fr = SpawnObj(a.nextLevelPrefab, pos_new);
-        //         fr.SetSimulated(true);
-        //     }
-        // };
 
         f.OnGameWin = () =>
         {
@@ -204,7 +233,13 @@ public class Game : MonoBehaviour
         obj = SpawnNextObj();
         Debug.Log("Restart");
         score = 50;
-        scoreLabel.text = "50";
+        digitsLabel.text = "0";
+        tensLabel.text = "5";
+
+        var curTens = tensLabel.transform.position;
+        var curDigits = digitsLabel.transform.position;
+        tensLabel.transform.position = new Vector3(curTens.x, curDigits.y, curTens.z);
+        tensLabel.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         isGameOver = false;
     }
@@ -225,6 +260,75 @@ public class Game : MonoBehaviour
         }
     }
 
+    public void PlayMusic()
+    {
+        if (isMusicEnabled)
+        {
+            isMusicEnabled = false;
+            var musicLabel = GameObject.Find("Music").GetComponent<Text>();
+            musicLabel.color = Color.gray;
+
+            var bgm = GameObject.Find("Ambient").GetComponent<AudioSource>();
+            bgm.Pause();
+
+        }
+        else
+        {
+            isMusicEnabled = true;
+            var musicLabel = GameObject.Find("Music").GetComponent<Text>();
+            musicLabel.color = Color.white;
+
+            var bgm = GameObject.Find("Ambient").GetComponent<AudioSource>();
+            bgm.Play();
+        }
+    }
+
+    public void TextRotate()
+    {
+        if (isRotation)
+        {
+            isRotation = false;
+            var rotationLabel = GameObject.Find("Rotate").GetComponent<Text>();
+            rotationLabel.color = Color.gray;
+
+            var curTens = tensLabel.transform.position;
+             var curDigits = digitsLabel.transform.position;
+            tensLabel.transform.position = new Vector3(curTens.x, curDigits.y, curTens.z);
+            tensLabel.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            isRotation = true;
+            var rotationLabel = GameObject.Find("Rotate").GetComponent<Text>();
+            rotationLabel.color = Color.white;
+
+            var tens = int.Parse(tensLabel.text);
+
+            var curTens = tensLabel.transform.position;
+            var curDigits = digitsLabel.transform.position;
+            // Debug.Log(curTens);
+            tensLabel.transform.position = new Vector3(curTens.x, curDigits.y - (4-tens)*10, curTens.z);
+            tensLabel.transform.localRotation = Quaternion.Euler(0, 0, (4-tens)*10f);
+        }
+    }
+
+    public void CubeExplosion()
+    {
+        if (isExplosion)
+        {
+            isExplosion = false;
+            var explosionLabel = GameObject.Find("Explosion").GetComponent<Text>();
+            explosionLabel.color = Color.gray;
+
+        }
+        else
+        {
+            isExplosion = true;
+            var explosionLabel = GameObject.Find("Explosion").GetComponent<Text>();
+            explosionLabel.color = Color.white;
+        }
+    }
+
     private void OnGameWin()
     {
         isGameOver = true;
@@ -237,13 +341,7 @@ public class Game : MonoBehaviour
         isGameOver = true;
         playButton.gameObject.SetActive(true);
         loseAudio.Play();
-        // for (int i = 0; i < objs.Count; i++)
-        // {
-        //     objs[i].SetSimulated(false);
-        //     Destroy(objs[i].gameObject);
-        // }
 
-        // objs.Clear();
     }
 
     private void RemoveObj(Obj f)
@@ -271,16 +369,26 @@ public class Game : MonoBehaviour
         return false;
     }
 
-    // private void AddScore(int score)
-    // {
-    //     this.score += score;
-    //     scoreLabel.text = $"{this.score}";
-    // }
+
 
     private void ChangeScore()
     {
         this.score -= 1;
-        scoreLabel.text = $"{this.score}";
+        int tens = this.score / 10;
+        int digits = this.score % 10;
+        tensLabel.text = $"{tens.ToString()}";
+        digitsLabel.text = $"{digits.ToString()}";
+
+
+        if (isRotation)
+        {
+            var curTens = tensLabel.transform.position;
+            var curDigits = digitsLabel.transform.position;
+            // Debug.Log(curTens);
+            tensLabel.transform.position = new Vector3(curTens.x, curDigits.y - (4-tens)*10, curTens.z);
+            tensLabel.transform.localRotation = Quaternion.Euler(0, 0, (4-tens)*10f);
+        }
+        
     }
 
 }

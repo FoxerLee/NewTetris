@@ -11,9 +11,12 @@ public class Obj : MonoBehaviour
     public Action<Obj, Obj> OnLevelUp;
     public Action OnGameWin;
 
-    public Vector3 shakeRate = new Vector3(0.1f, 0.1f, 0.1f);
-    public float shakeTime = 0.5f;
-    public float shakeDertaTime = 0.1f;
+    // public Vector3 shakeRate = new Vector3(0.1f, 0.1f, 0.1f);
+    // public float shakeTime = 0.5f;
+    // public float shakeDertaTime = 0.1f;
+    public float gapTime = 0.1f;
+    public float totalTime = 0f;
+    public float durationTime = 0f;
 
     public Rigidbody2D rigid;
     private bool isTouchRedline;
@@ -32,7 +35,7 @@ public class Obj : MonoBehaviour
             return;
         }
         timer += Time.deltaTime;
-        if (timer > 5)
+        if (timer > 3)
         {
             Debug.Log("Win!");
             OnGameWin?.Invoke();
@@ -64,21 +67,21 @@ public class Obj : MonoBehaviour
     //         }
     //     }
     // }
-    public void Shake() {
-        StartCoroutine(Shake_Coroutine());
-    }
+    // public void Shake() {
+    //     StartCoroutine(Shake_Coroutine());
+    // }
 
-    public IEnumerator Shake_Coroutine() {
-        var oriPosition = gameObject.transform.position;
-        for(float i = 0; i < shakeTime; i += shakeDertaTime) {
-            gameObject.transform.position = oriPosition +
-                UnityEngine.Random.Range(-shakeRate.x, shakeRate.x) * Vector3.right +
-                UnityEngine.Random.Range(-shakeRate.y, shakeRate.y) * Vector3.up +
-                UnityEngine.Random.Range(-shakeRate.z, shakeRate.z) * Vector3.forward;
-            yield return new WaitForSeconds(shakeDertaTime);
-        }
-        gameObject.transform.position = oriPosition;
-    }
+    // public IEnumerator Shake_Coroutine() {
+    //     var oriPosition = gameObject.transform.position;
+    //     for(float i = 0; i < shakeTime; i += shakeDertaTime) {
+    //         gameObject.transform.position = oriPosition +
+    //             UnityEngine.Random.Range(-shakeRate.x, shakeRate.x) * Vector3.right +
+    //             UnityEngine.Random.Range(-shakeRate.y, shakeRate.y) * Vector3.up +
+    //             UnityEngine.Random.Range(-shakeRate.z, shakeRate.z) * Vector3.forward;
+    //         yield return new WaitForSeconds(shakeDertaTime);
+    //     }
+    //     gameObject.transform.position = oriPosition;
+    // }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

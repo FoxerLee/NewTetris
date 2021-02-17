@@ -149,3 +149,7 @@ MonoBehaviour:
   id: 0
   score: 0
   nextLevelPrefab: {fileID: 0}
+  gapTime: 0.5
+  totalTime: 0
+  durationTime: 0
+  rigid: {fileID: 0}
