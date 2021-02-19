@@ -49,6 +49,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -100,9 +101,10 @@ MonoBehaviour:
   score: 2
   nextLevelPrefab: {fileID: 2946043829196061810, guid: 04a5e7fbbc3e344ac843cfa8d9ec6bb5,
     type: 3}
-  gapTime: 0.5
-  totalTime: 0
-  durationTime: 0
+  isHit: 0
+  shakeRate: {x: 0.1, y: 0.1, z: 0.1}
+  shakeTime: 0.5
+  shakeDertaTime: 0.1
   rigid: {fileID: 0}
 --- !u!50 &2798860366858006241
 Rigidbody2D:
